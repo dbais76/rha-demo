@@ -4,7 +4,7 @@
     redhat.openshift.openshift_auth:
       host: https://api.ocp4.example.com:6443
       username: admin
-      password: redhatocp
+      password: redhat
       validate_certs: no
     register: k8s_auth_result
 
