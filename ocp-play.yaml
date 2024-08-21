@@ -1,0 +1,85 @@
+- hosts: localhost
+  tasks:
+  - name: Try to login to OCP cluster
+    redhat.openshift.openshift_auth:
+      host: https://api.ocp4.example.com:6443
+      username: admin
+      password: redhatocp
+      validate_certs: no
+    register: k8s_auth_result
+
+    
+  - name: deploy demo  pod
+    k8s:
+      state: present
+      apply: yes
+      namespace: ansible-ocp
+      host: https://api.ocp4.example.com:6443 
+      api_key: "{{ k8s_auth_result.k8s_auth.api_key }}"
+      validate_certs: no
+      definition:
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: demo-openshift
+          labels:
+            app: demo-openshift
+        spec:
+          selector:
+            matchLabels:
+              app: demo-openshift
+          replicas: 1
+          template:
+            metadata:
+              labels:
+                app: demo-openshift
+            spec:
+              containers:
+              - name: demo-openshift
+                image: quay.io/dbais76/rha-demo:1.0
+                ports:
+                - containerPort: 8080
+                  protocol: TCP
+                resources:
+                  requests:
+                    cpu: 300m
+                    memory: 64Mi
+                  limits:
+                    cpu: 600m
+                    memory: 128Mi
+  - name: create service using service inline definition
+    k8s:
+      state: present
+      apply: yes
+      namespace: ansible-ocp
+      host: https://api.ocp4.example.com:6443
+      api_key: "{{ k8s_auth_result.k8s_auth.api_key }}"
+      validate_certs: no
+      definition:
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: demo-svc
+          namespace: ansible-ocp
+        spec:
+          ports:
+          - port: 8080
+            protocol: TCP
+            targetPort: 8080
+          selector:
+            app: demo-openshift
+          type: ClusterIP
+             
+     
+  - name: Create a Route exposing svc
+    redhat.openshift.openshift_route:
+      service: demo-svc
+      host: https://api.ocp4.example.com:6443
+      api_key: "{{ k8s_auth_result.k8s_auth.api_key }}"
+      namespace: ansible-ocp
+      validate_certs: no
+    register: route
+  
+  - name: Ensure the route is displayed
+    debug:
+      msg: "The application can be accessed using the url http://{{ route['result']['spec']['host'] }}"
