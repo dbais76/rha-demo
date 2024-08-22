@@ -5,7 +5,9 @@ RED='\033[0;31m'
 BGreen='\033[1;32m'
 NC='\033[0m' # No Color
 
-echo -e "${NC}Please open OCP console from ${BGreen}https://console-openshift-console.apps.ocp4.example.com\n"
+clear
+
+echo -e "${NC} \n\n\n                   Please open OCP console from ${BGreen}https://console-openshift-console.apps.ocp4.example.com\n"
 echo -e "${NC}Press any key once you have OCP console open and logged in to the console\n"
 read -p "Press any key to continue... " -n1 -s
 

@@ -1,4 +1,6 @@
 - hosts: localhost
+  become: yes
+  become_user: student
   tasks:
   - name: Try to login to OCP cluster
     redhat.openshift.openshift_auth:
@@ -85,4 +87,5 @@
       msg: "The application can be accessed using the url http://{{ route['result']['spec']['host'] }}"
       
   - name: Open Firefox browser to display application web page
-    command: firefox http://{{ route['result']['spec']['host'] }}"    
+    command: firefox http://{{ route['result']['spec']['host'] }}
+
