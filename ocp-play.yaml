@@ -83,3 +83,6 @@
   - name: Ensure the route is displayed
     debug:
       msg: "The application can be accessed using the url http://{{ route['result']['spec']['host'] }}"
+      
+  - name: Open Firefox browser to display application web page
+    command: firefox http://{{ route['result']['spec']['host'] }}"    
