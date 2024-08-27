@@ -13,7 +13,7 @@ read -p "Press any key to continue... " -n1 -s
 
 #lab automation-ansible start
 
-oc login -u admin -p redhat https://api.ocp4.example.com:6443
+oc login -u developer -p developer https://api.ocp4.example.com:6443 1> /dev/null
 echo -e "Login successful to OpenShift \n\n"
 
 echo -e "${BIRed}OpenShift Project Creation for Application Deployment ${NC}\n\n"

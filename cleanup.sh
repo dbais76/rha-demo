@@ -1,0 +1,33 @@
+#!/bin/bash
+BIRed='\033[1;91m' 
+BBlue='\033[1;34m'
+RED='\033[0;31m'
+BGreen='\033[1;32m'
+NC='\033[0m' # No Color
+
+clear
+if (whiptail --title "Demo application Object deletion confirmation" --yes-button "Delete" --no-button "Not for now"  --yesno "Do you want to proceed with demo object deletion?" 10 60) then
+
+	echo -e "${NC} \n\n\nDeleting OpenShift Projects now !!"
+
+	oc login -u developer -p developer https://api.ocp4.example.com:6443 1> /dev/null
+
+	PRJ=$(oc get projects -o custom-columns=NAME:.metadata.name,OWNER:.metadata.annotations.openshift\\.io/requester | grep developer | awk '{ print $1 }')
+		for i in $PRJ
+	  	do
+		     echo -e "Deleting project ${BIRed}$i${NC}"
+		     oc delete project $i 1> /dev/null
+	          done   
+
+	echo -e "${NC} \n\n\nDeleting Podman containers now !!"
+	DEMOCON=$(podman ps -a  --format="{{.ID}} {{.Names}} {{.Status}}"  | awk '{ print $2 }')
+		for y in $DEMOCON
+		do
+		  echo -e "\nDeleting container ${BIRed}$y${NC} "; podman stop $y ; podman rm $y 1> /dev/null
+	        done
+	clear       	
+	echo -e "\n\n\n\n\n${BBlue}                   *** CLEANUP COMPLETE *** \n\n\n\n ${NC}"       	
+else
+       echo "You can run the cleanup later if you wish to delete.."
+       exit
+fi
