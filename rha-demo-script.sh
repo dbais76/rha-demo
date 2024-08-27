@@ -28,7 +28,7 @@ else
       sleep 5
 fi 
 
-
+: '
 DIR="./rha-demo"
 if [ -d "$DIR" ]; then
       echo "Cloned content exists in ${DIR}..."
@@ -41,3 +41,4 @@ fi
 ##ansible-playbook ocp-play.yaml 
 echo -e "${BBlue}Exit from the shell once task is done to get back to parent shell prompt.${NC}\n" 
 $SHELL
+'
