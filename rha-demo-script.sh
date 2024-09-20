@@ -25,7 +25,7 @@ if [ $? -eq 0 ]
 else
       echo "Creating project ansible-ocp now !!"
       oc new-project ansible-ocp
-      sleep 5
+      sleep 10
 fi 
 
 : '
